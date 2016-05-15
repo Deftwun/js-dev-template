@@ -1,0 +1,22 @@
+{
+  "name": "dev-template",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify index.js -o bundle.js",
+    "watch": "watchify index.js -o bundle.js",
+    "serve": "http-server",
+    "test": "npm-run-all --parallel watch serve"
+  },
+  "author": "Jeff Wakeman",
+  "license": "ISC",
+  "dependencies": {
+    
+  },
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "watchify": "^3.7.0",
+    "npm-run-all": "^1.7.0"
+  }
+}
