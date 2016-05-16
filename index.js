@@ -1,1 +1,3 @@
-console.log("Hello world");
+var game = require("./Game.js");
+
+game.start();

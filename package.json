@@ -1,5 +1,5 @@
 {
-  "name": "dev-template",
+  "name": "game-template",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -12,11 +12,12 @@
   "author": "Jeff Wakeman",
   "license": "ISC",
   "dependencies": {
-    
+    "gameloop": "^1.1.3",
+    "matter-js": "^0.10.0"
   },
   "devDependencies": {
     "browserify": "^13.0.0",
-    "watchify": "^3.7.0",
-    "npm-run-all": "^1.7.0"
+    "npm-run-all": "^2.1.0",
+    "watchify": "^3.7.0"
   }
 }
