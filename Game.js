@@ -9,41 +9,22 @@ var game = new Game({
 });
 
 game.physics = Matter.Engine.create();
+game.physics.world.gravity = {x:0,y:.5};
 
-//Debug Renderer
-var render = Matter.Render.create({
-    element: document.getElementById("canvas"),
+game.renderer = Matter.Render.create({
+    element: document.body,
     engine: game.physics,
     options: {
-        width: 800,
-        height: 600,
-        pixelRatio: 1,
-        background: '#fafafa',
-        wireframeBackground: '#222',
-        hasBounds: false,
-        enabled: true,
-        wireframes: true,
-        showSleeping: true,
-        showDebug: false,
-        showBroadphase: false,
-        showBounds: false,
-        showVelocity: false,
-        showCollisions: false,
-        showSeparations: false,
-        showAxes: false,
-        showPositions: false,
-        showAngleIndicator: false,
-        showIds: false,
-        showShadows: false,
-        showVertexNumbers: false,
-        showConvexHulls: false,
-        showInternalEdges: false,
-        showMousePosition: false
+      width:800,
+      height:600
     }
 });
 
 game.on('start', function () {
-
+  var world = game.physics.world,
+      ball = Matter.Bodies.circle(400,300,30,{restitution:.5}),
+      floor = Matter.Bodies.rectangle(400,600,800,50,{isStatic:true});
+  Matter.World.add(world,[ball,floor]);
 });
 
 game.on('end', function (state) {
@@ -60,13 +41,10 @@ game.on('pause', function () {
 
 game.on('update', function(dt){
   Matter.Engine.update(this.physics,1000/this.fps);
-  //console.log(this.options);
 });
 
 game.on('draw', function (renderer, dt) {
-  Matter.Render.world(render);
-  console.log('ok');
-  
+  Matter.Render.world(this.renderer);
 });
 
 module.exports = game;
