@@ -1,1 +1,1 @@
-Basic npm package template I'm currently using
+Template I use for js game dev 
