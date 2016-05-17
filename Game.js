@@ -4,25 +4,35 @@ var Game = require("gameloop");
 // http://brm.io/matter-js
 var Matter = require("matter-js");
 
+var EntityManager = require("./EntityManager.js");
+
+//This is a singleton class. Requiring this module always returns the same
+// game object
+
 var game = new Game({
   fps:15
 });
 
+game.entityManager = new EntityManager();
 game.physics = Matter.Engine.create();
 game.physics.world.gravity = {x:0,y:.5};
 
-game.renderer = Matter.Render.create({
-    element: document.body,
-    engine: game.physics,
-    options: {
-      width:800,
-      height:600
-    }
-});
+var debugRender = true;
+
+if (debugRender){
+ game.renderer = Matter.Render.create({
+     element: document.body,
+     engine: game.physics,
+     options: {
+       width:800,
+       height:600
+     }
+ });
+}
 
 game.on('start', function () {
   var world = game.physics.world,
-      ball = Matter.Bodies.circle(400,300,30,{restitution:.5}),
+      ball = Matter.Bodies.circle(400,0,30,{restitution:.5}),
       floor = Matter.Bodies.rectangle(400,600,800,50,{isStatic:true});
   Matter.World.add(world,[ball,floor]);
 });
@@ -41,10 +51,13 @@ game.on('pause', function () {
 
 game.on('update', function(dt){
   Matter.Engine.update(this.physics,1000/this.fps);
+  this.entityManager.update(dt);
 });
 
 game.on('draw', function (renderer, dt) {
-  Matter.Render.world(this.renderer);
+  if (debugRender){
+    Matter.Render.world(renderer,this.physics);
+  }
 });
 
 module.exports = game;
