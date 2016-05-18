@@ -13,9 +13,12 @@ var game = new Game({
   fps:15
 });
 
-game.entityManager = new EntityManager();
+
 game.physics = Matter.Engine.create();
 game.physics.world.gravity = {x:0,y:.5};
+
+game.entityManager = new EntityManager(game.physics);
+
 
 var debugRender = true;
 
