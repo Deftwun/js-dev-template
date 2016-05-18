@@ -1,30 +1,41 @@
 var uniqueID = 0;
 
+//ENtity
 var Entity = function(options){
+  var options = options || {
+
+  };
+
+  this.deleted = false;
   this.id = uniqueID++;
-  this.health = 1;
   this.bodies = [];
 }
 
-
 var Manager = {
   entities : [],
-  removedEntities : []
+  deletedEntities : []
 };
 
 Manager.prototype = {
   createEntity : function(options){
-    this.entities.push(new Entity());
+    this.entities.push(new Entity(options));
   },
 
   update: function(dt){
+    //update entities
     for (var i=0; i < this.entities.size; i++){
-      this.entities[i].update(dt);
+      if (this.entities[i].update)
+        this.entities[i].update(dt);
+
+      if (this.entities[i].deleted)
+        this.removedEntites.push(this.entities[i])
     }
 
-    for (var i=0; i < this.removedEntities.size; i++){
-      Matter.World.remove(world,this.removedEntities[i].bodies);
-      this.entities.splice(i,1);
+    //remove deleted entities
+    for (var i=0; i < this.deletedEntities.size; i++){
+      Matter.World.remove(world,this.deletedEntities[i].bodies);
+      var x = this.entities.indexOf(this.deletedEntities[i]);
+      this.entities.splice(x,1);
     }
   }
 }
