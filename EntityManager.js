@@ -1,40 +1,46 @@
+var Matter = require("matter-js");
+
 function createPhysics(cfg){
-  var shape = cfg.shape;
-  var options = cfg.options;
+  
+  cfg = cfg || {};
+  
+  var shape = cfg.shape || {
+    type : Math.random() > .5 ? "circle" : "rectangle",
+    radius : Math.random() * 10 + 1,
+    width : Math.random() * 10 + 1,
+    height : Math.random() * 10 + 1
+  };
+  
   var body = null;
 
   //  http://brm.io/matter-js/docs/classes/Bodies.html
   if (shape.type === "circle"){
-    body = Matter.Bodies.circle(cfg.position.x,cfg.position.y,cfg.shape.radius,cfg);
+    body = Matter.Bodies.circle(0,0,shape.radius,cfg);
   }
   else if(shape.type === "rectangle"){
-    body = Matter.bodies.rectangle(shape.x||0,shape.y||0,shape.width||1,shape.height||1,options);
+    body = Matter.Bodies.rectangle(0,0,shape.width,shape.height,cfg);
   }
   else {
     console.log(shape.type + " not supported");
   }
+  
   return body;
 }
 
 
 //Entity
 var Entity = function(cfg){
-  /*
+  
   cfg = cfg || {
     name : "unknown",
-    physics: {
-      shape:{
-        type:"circle",
-        radius:5
-      }
-    }
+    physics: null
   };
-  */
+  
   this.name = cfg.name;
   this.deleted = false;
   this.body = createPhysics(cfg.physics);
   this.body.entity = this;
-
+  
   /*Override these methods with your own logic*/
   this.update = function(dt){};
   this.collideStart = function(entity){};
@@ -47,6 +53,7 @@ var Entity = function(cfg){
 //Manager
 var Manager = function(engine){
   this.entities = [];
+  this.engine = engine;
   this.deletedEntities = [];
 
   //Handle collisions
@@ -72,7 +79,7 @@ var Manager = function(engine){
     };
   });
 
-  Matter.Events.on(engine,'collisionActive',function(evt){
+  Matter.Events.on(engine,'collisionAcive',function(evt){
     for (var x in evt.pairs){
       var a = evt.pairs[x].bodyA,
           b = evt.pairs[x].bodyB;
@@ -82,17 +89,22 @@ var Manager = function(engine){
       }
     };
   });
+  
+  
 
 };
 
 Manager.prototype = {
-  createEntity : function(cfg){
-    console.log(cfg);
-    //var e = new Entity(cfg);
-    //this.entities.push(e);
-    //return e;
+  createEntity: function(cfg){
+    var e = new Entity(cfg);
+    Matter.World.addBody(this.engine.world,e.body);
+    this.entities.push(e);
+    return e;
   },
 
+  deleteEntity: function(entity){
+    entity.deleted = true;
+  },
 
   update: function(dt){
     //update entities

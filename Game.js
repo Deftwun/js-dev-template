@@ -37,11 +37,34 @@ game.on('start', function () {
 
   var world = game.physics.world;
 
-  //var ball = game.entityManager.createEntity();
-
+  var ball = game.entityManager.createEntity({
+    name:"ball",
+    physics:{
+      shape:{
+        type:"circle",
+        radius:15
+      },
+      position:{x:400,y:0},
+      restitution:.75
+    }
+  });
+  console.log(ball);
+  var floor = game.entityManager.createEntity({
+    name:"floor",
+    physics:{
+      shape: {
+        type: "rectangle",
+        width:800,
+        height:50
+      },
+      isStatic: true,
+      position:{x:400,y:600}
+    }
+  });
+  
   //ball = Matter.Bodies.circle(400,0,30,{restitution:.5}),
   //floor = Matter.Bodies.rectangle(400,600,800,50,{isStatic:true});
-  Matter.World.add(world,[ball,floor]);
+  
 });
 
 game.on('end', function (state) {
