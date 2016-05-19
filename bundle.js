@@ -1,1 +1,1 @@
-console.error("Error: Cannot find module './EntityManager.js' from 'C:\\Users\\PC\\dev\\js-dev-template'");
+console.error("Error: Parsing file /home/ubuntu/workspace/template/js-dev-template/Game.js: Unexpected token (44:12)");

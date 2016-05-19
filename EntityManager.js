@@ -1,41 +1,52 @@
+var Matter = require("matter-js");
+
+function createPhysics(cfg){
+  var shape = cfg.shape;
+  var options = cfg.options;
+  var body = null;
+  
+  //  http://brm.io/matter-js/docs/classes/Bodies.html
+  if (shape.type === "circle"){
+    body = Matter.Bodies.circle(cfg.position.x,cfg.position.y,cfg.shape.radius,cfg);
+  }
+  else if(shape.type === "rectangle"){
+    body = Matter.bodies.rectangle(shape.x||0,shape.y||0,shape.width||1,shape.height||1,options);
+  }
+  else {
+    console.log(shape.type + " not supported");
+  }
+  return body;
+}
+
 //Entity
-var Entity = function(options){
+var Entity = function(cfg){
+  cfg = cfg || {
+    name : "unknown",
+    physics: {
+      shape:{
+        type:"circle",
+        radius:5
+      }
+    }
+  };
+  this.name = cfg.name;
   this.deleted = false;
-  this.body = null;
+  this.body = createPhysics(cfg.physics);
+  this.body.entity = this;
 
-  //assign body to this entity
-  this.setBody = function(body){
-    body.entity = this;
-    this.body = body;
-  }
-
-  //Override these methods with your own logic
-  this.update = function(dt){
-    //
-  };
-  this.collideStart = function(entity){
-    //
-  };
-  this.collideEnd = function(entity){
-    //
-  }
-  this.collideActive = function(entity){
-    //
-  }
-
+  /*Override these methods with your own logic*/
+  this.update = function(dt){};
+  this.collideStart = function(entity){};
+  this.collideEnd = function(entity){};
+  this.collideActive = function(entity){};
 }
 
-function entityFromBody(body,entities){
-  return entities.find(function(ent){
-    return ent.id === body.label;
-  });
-}
+
 
 //Manager
 var Manager = function(engine){
   this.entities = [];
   this.deletedEntities = [];
-
 
   //Handle collisions
   Matter.Events.on(engine,'collisionStart',function(evt){
@@ -74,12 +85,11 @@ var Manager = function(engine){
 };
 
 Manager.prototype = {
-  createEntity : function(options){
-    var e = new Entity(options);
+  createEntity : function(cfg){
+    var e = new Entity(cfg);
     this.entities.push(e);
     return e;
   },
-
 
 
   update: function(dt){
@@ -94,9 +104,11 @@ Manager.prototype = {
 
     //remove deleted entities
     for (var i=0; i < this.deletedEntities.size; i++){
-      Matter.World.remove(world,this.deletedEntities[i].bodies);
+      Matter.World.remove(this.engine.world,this.deletedEntities[i].bodies);
       var x = this.entities.indexOf(this.deletedEntities[i]);
       this.entities.splice(x,1);
     }
   }
 }
+
+module.exports = Manager;
