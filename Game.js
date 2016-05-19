@@ -10,7 +10,7 @@ var EntityManager = require("./EntityManager.js");
 // game object
 
 var game = new Game({
-  fps:15
+  fps:60
 });
 
 
@@ -48,7 +48,7 @@ game.on('start', function () {
       restitution:.75
     }
   });
-  console.log(ball);
+
   var floor = game.entityManager.createEntity({
     name:"floor",
     physics:{
@@ -61,10 +61,10 @@ game.on('start', function () {
       position:{x:400,y:600}
     }
   });
-  
+
   //ball = Matter.Bodies.circle(400,0,30,{restitution:.5}),
   //floor = Matter.Bodies.rectangle(400,600,800,50,{isStatic:true});
-  
+
 });
 
 game.on('end', function (state) {
