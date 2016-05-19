@@ -1,10 +1,8 @@
-var Matter = require("matter-js");
-
 function createPhysics(cfg){
   var shape = cfg.shape;
   var options = cfg.options;
   var body = null;
-  
+
   //  http://brm.io/matter-js/docs/classes/Bodies.html
   if (shape.type === "circle"){
     body = Matter.Bodies.circle(cfg.position.x,cfg.position.y,cfg.shape.radius,cfg);
@@ -18,8 +16,10 @@ function createPhysics(cfg){
   return body;
 }
 
+
 //Entity
 var Entity = function(cfg){
+  /*
   cfg = cfg || {
     name : "unknown",
     physics: {
@@ -29,6 +29,7 @@ var Entity = function(cfg){
       }
     }
   };
+  */
   this.name = cfg.name;
   this.deleted = false;
   this.body = createPhysics(cfg.physics);
@@ -86,9 +87,10 @@ var Manager = function(engine){
 
 Manager.prototype = {
   createEntity : function(cfg){
-    var e = new Entity(cfg);
-    this.entities.push(e);
-    return e;
+    console.log(cfg);
+    //var e = new Entity(cfg);
+    //this.entities.push(e);
+    //return e;
   },
 
 
